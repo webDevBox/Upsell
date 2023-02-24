@@ -1,0 +1,51 @@
+.button{
+    border: none;
+    color: white;
+    padding: 8px 15px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 15px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.create-upsell-button{
+    background-color: #5564C2;
+    border-radius: 12px;
+    margin-top: 50px;
+    margin-left: 40%;
+}
+
+.btn-purple{
+    background-color: #5564C2;
+}
+
+.flex{
+    display: flex;
+}
+
+.right{
+    margin-left: 70%;
+}
+
+.mt-10{
+    margin-top: 50px;
+}
+
+.hidden{
+    display: none;
+}
+
+.loading{
+    width: 100px;
+    height: 30px;
+}
+
+.settingForm{
+    padding: 20px;
+}
+
+.p-10{
+    padding: 10px;
+}
