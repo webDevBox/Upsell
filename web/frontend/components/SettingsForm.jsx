@@ -1,4 +1,4 @@
-import {React, useState , useCallback} from "react"
+import {React, useState , useEffect} from "react"
 import {Page, Card, DataTable, Badge, Button,
     TextField
 } from '@shopify/polaris'
@@ -8,33 +8,54 @@ import 'react-multi-email/dist/style.css';
 
 export default function SettingsForm()
 {
-  const [emails, setEmails] = useState([]);
-  const {
-      data
+  const [emails, setEmails] = useState([])
+  const [time, setTime] = useState()
+  const [column, setColumn] = useState()
+  const[value,setValue] = useState()
+
+  
+    const {
+      data,
+      refetch: refetchProductCount,
+      isLoading: isLoadingCount,
+      isRefetching: isRefetchingCount
     } = useAppQuery({
       url: "/api/settings",
       reactQueryOptions: {
-        onSuccess: () => {
-          console.log('API',data)
-          // setEmails(data.shop.setting_emails)
+        onSuccess: (data) => {
+          // setEmails(data.emails)
+          setTime(data.time)
         },
       },
-    });
+    })
+    
+    const {
+      response,
+    } = useAppQuery({
+      url: `/api/updateEmail/${column}/${value}`,
+      reactQueryOptions: {
+        onSuccess: () => {
+          
+        },
+      },
+    })
+
+    const handleTimeChange = (event) => {
+      setTime(event.target.value)
+      setColumn('email_time')
+      setValue(event.target.value)
+    };
 
     return(
         <>
-        {console.log('return',data)}
-        <p>{data && data.shop.setting_emails}</p>
-        <ReactMultiEmail 
-          emails={data && data.shop.setting_emails}
-        />
-        
-        {/* <div className="p-10">
+        <div className="p-10">
           <h3>Input email address</h3>
           <ReactMultiEmail
             emails={emails}
             onChange={(_emails) => {
+              setColumn('setting_emails')
               setEmails(_emails)
+              setValue(_emails)
             }}
             getLabel={(email, index, removeEmail) => {
               return (
@@ -47,8 +68,17 @@ export default function SettingsForm()
               );
             }}
             />
-            </div> */}
 
+            <h3>Input Time</h3>
+            <input
+              type="time"
+              id="time-input"
+              name="time"
+              className="form-control"
+              value={time}
+              onChange={handleTimeChange}
+            />
+            </div>
 
         {/* <div className='container'>
           <div className='row'>

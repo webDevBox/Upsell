@@ -7,34 +7,29 @@ use App\Models\Upsell;
 
 class UpsellController extends Controller
 {
-    public function index()
+    public function index(Request $request,$id)
     {
-        $shopName = $request->shop;
-        $upsellId = $request->id;
+        $session = $request->get('shopifySession');
+        $shopName = $session->getShop();
 
         //meaning new promotion
-        if($upsellId == "")
+        if($id == "")
         {
             return response()->json( 
             [
-                'shopName' => $shopName, 
-                'upsellId' => $upsellId,
-                'context' => 'home',
-                'view' => 'new'
+                'error' => 'Not Found', 
+                'code' => 404
             ]);
         }
         else //meaning loading existing promotion
         {
-            $upsellObj = Upsell::where('id', $upsellId)->first();
+            $upsell = Upsell::where('id', $id)->first();
 
-            return response()->json(
-            [
-                'shopName' => $shopName,
-                'upsellId' => $upsellId,
-                'upsellObj' => $upsellObj,  
-                'context' => 'home',
+            return response()->json([
+                'upsell' => $upsell,  
             ]);
         }
+
     }
 
     public function updateUpsellStatus($id)
@@ -59,6 +54,10 @@ class UpsellController extends Controller
 
     public function saveUpsell(Request $request)
     {
+        // return response()->json([$request->isRule2,
+        // $request->rule2Select,
+        // $request->rule2Value
+        // ]);
         $id = $request->id;
         $session = $request->get('shopifySession');
         $shopName = $session->getShop();
@@ -70,12 +69,12 @@ class UpsellController extends Controller
         $isRule1 = $request->isRule1;
         $isRule2 = $request->isRule2;
         $isRule3 = $request->isRule3;
-        $rule2Select = $request->rule2Select;
-        $rule2Value = $request->rule2Value;
-        $rule3Select = $request->rule3Select;
-        $rule3Value = $request->rule3Value;
-        $lineOne = $request->lineOne !== null ? $request->lineOne : "";
-        $lineTwo = $request->lineTwo !== null ? $request->lineTwo : "";
+        $rule2Select = $isRule2 == true ? $request->rule2Select : null;
+        $rule2Value = $isRule2 == true ? $request->rule2Value : null;
+        $rule3Select = $isRule3 == true ?  $request->rule3Select : null;
+        $rule3Value = $isRule3 == true ?  $request->rule3Value : null;
+        $lineOne = $request->lineOne != null ? $request->lineOne : "";
+        $lineTwo = $request->lineTwo != null ? $request->lineTwo : "";
         $showsForOption = $request->showsForOption;
         $showsForData = $request->showsForData;
 
@@ -147,17 +146,21 @@ class UpsellController extends Controller
                 ->update(['status' => 0]);
     }
 
-    public function delete()
+    public function delete($id)
     {
-        $upsellId = $request->upsellId;
-        $shopName = $request->shop;
-
-        Upsell::where('id', $upsellId)
-                ->delete();
-
-        // $upsells = Upsell::where('shop_name', $shopName)
-        //                 ->get();
-
-        // return view('home', ['upsells' => $upsells, 'shopName' => $shopName]);
+        $upsell = Upsell::find($id);
+        if(isset($upsell))
+        {
+            Upsell::where('id', $id)->delete();
+            return response()->json([
+                'status' => 'success',
+                'code' => 200
+            ]);
+        }
+        return response()->json([
+            'status' => 'error',
+            'code' => 404
+        ]);
+        
     } 
 }

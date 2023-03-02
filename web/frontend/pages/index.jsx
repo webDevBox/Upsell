@@ -12,7 +12,7 @@ export default function App() {
 
   const handleChange = useCallback(() => setActive(!active), [active]);
 
-  const activator = <Button plain onClick={handleChange}>How checkout hero works?</Button>;
+  const activator = <center> <a className='Model-opener' onClick={handleChange}>How checkout hero works?</a> </center>
 
   return (
     <>

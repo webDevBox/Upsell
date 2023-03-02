@@ -24,6 +24,7 @@ export default function Routes({ pages }) {
   const Analytics = routes.find(({ path }) => path === "/analytics").component;
   const Settings = routes.find(({ path }) => path === "/settings").component;
   const CreateUpsell = routes.find(({ path }) => path === "/createUpsell").component;
+  // const EditUpsell = routes.find(({ path }) => path === "/editUpsell").component;
 
   return (
     <ReactRouterRoutes>

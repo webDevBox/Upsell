@@ -11,6 +11,7 @@ class Shop extends Model
 
     public $timestamps = false;
 
+    protected $fillable = ['setting_emails','email_time'];
     public function getEmailTimeAttribute($time)
     {
         $date=date_create($time);

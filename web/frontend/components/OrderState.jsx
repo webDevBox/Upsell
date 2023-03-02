@@ -15,8 +15,6 @@ export default function OrderState(props) {
 
 
     const handleOrderTotalChange = useCallback((value) => props.setOrderAmount(value))
-    
-    
     const handleOrderTotalConditionChange = useCallback((value) => props.setorderTotalCondition(value))
 
   const formOrderTotal = (

@@ -146,9 +146,12 @@ Route::post('/api/webhooks', function (Request $request) {
 
 Route::middleware(['shopify.auth'])->group(function () {
     Route::get('/api/homeData',[MainController::class, 'index']);
+    Route::get('/api/getUpsell/{id}',[UpsellController::class, 'index']);
+    Route::get('/api/deleteUpsell/{id}',[UpsellController::class, 'delete']);
     Route::post('/api/saveUpsell',[UpsellController::class, 'saveUpsell']);
     Route::get('/api/updateUpsellStatus/{id}',[UpsellController::class, 'updateUpsellStatus']);
     Route::get('/api/settings',[SettingController::class, 'index']);
+    Route::get('/api/updateEmail/{column}/{value}',[SettingController::class, 'updateEmail']);
 });
 
 

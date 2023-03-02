@@ -28,10 +28,37 @@ class SettingController extends Controller
 
         return response()->json(
         [
-            'shop' => $shop,
+            'emails' => $shop->setting_emails,
+            'time' => $shop->email_time,
             'shopName' => $shopName,
             'context' => 'settings'
         ]);
+    }
+
+    public function updateEmail(Request $request,$column,$value)
+    {
+        $session = $request->get('shopifySession');
+        $shopName = $session->getShop();
+
+        $shop = Shop::where('shop_name', $shopName)->first();
+
+        if($shop->setting_emails == $value || $shop->email_time == $value || !isset($value))
+        {
+            return response()->json(
+            [
+                'status' => false,
+                'code' => 422,
+            ]);
+        }
+        $shop->update([
+            $column => $value
+        ]);
+        return response()->json(
+        [
+            'status' => true,
+            'code' => 200,
+        ]);
+
     }
 
     public function cronJob()

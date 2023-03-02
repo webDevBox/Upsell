@@ -9,12 +9,17 @@
     cursor: pointer;
     border-radius: 5px;
 }
+.button:hover{
+    text-decoration: none;
+    color: white;
+}
 
 .create-upsell-button{
     background-color: #5564C2;
     border-radius: 12px;
     margin-top: 50px;
-    margin-left: 40%;
+    margin-left: 43%;
+    margin-bottom: 50px;
 }
 
 .btn-purple{
@@ -48,4 +53,15 @@
 
 .p-10{
     padding: 10px;
+}
+
+.Model-opener{
+cursor: pointer;
+margin-top: 100px;
+text-decoration: none;
+padding-bottom: 50px;
+}
+
+.Model-opener:hover{
+text-decoration: none;
 }

@@ -1,5 +1,5 @@
 import {useState,React,useCallback,useEffect} from 'react'
-import {useNavigate} from "react-router-dom"
+import {useNavigate,NavLink} from "react-router-dom"
 import {Page, Card, DataTable, Badge, Button, Layout
 } from '@shopify/polaris';
 import { useAppQuery } from "../hooks"
@@ -44,7 +44,7 @@ export default function Upsells() {
     isLoading: isLoadingCount,
     isRefetching: isRefetchingCount
   } = useAppQuery({
-    url: "/api/homeData",
+    url: `/api/homeData`,
     reactQueryOptions: {
       onSuccess: () => {
         setIsLoading(false)
@@ -54,13 +54,13 @@ export default function Upsells() {
 
   console.log(upselId)
 
-let updateName;
-  data?.upsells?.map((upsell,index) => {
-     updateName =[buttonGo+index, ]
-  })
+// let updateName;
+//   data?.upsells?.map((upsell,index) => {
+//      updateName =[buttonGo+index, ]
+//   })
 
   const rows = [
-    ['Name'],
+    ['Name','Status','Action'],
     
   ];
   var buttonData = ''
@@ -69,8 +69,7 @@ let updateName;
     // console.log("index",index)
     (upsell.status === 1 ) ? buttonData = 'Deactivate' : buttonData = 'Activate'
     rows.push([
-
-      upsell.name,
+      <NavLink to={`/upsell/${upsell.id}`} type="button"> {upsell.name} </NavLink>,
       (upsell.status == 1) ? <Badge status="success">Active</Badge> : <Badge status="critical">Deactive</Badge>,
       <Button key={index} loading={upsell.id === upselId.id && isLoading} onClick={() => { 
         updateUpsellStatus(upsell.id,index,buttonData)
