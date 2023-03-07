@@ -155,6 +155,7 @@ Route::middleware(['shopify.auth'])->group(function () {
     Route::get('/api/updateEmail/{column}/{value}',[SettingController::class, 'updateEmail']);
     
     Route::get('/api/getGraphsData',[AnalyticsController::class, 'getMetrics']);
+    Route::get('/api/getUpsellLogs',[AnalyticsController::class, 'getupsellLogs']);
 });
 
 

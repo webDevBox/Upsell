@@ -37,11 +37,13 @@ class AnalyticsController extends Controller
         ]);
     }
 
-    public function getupsellLogs()
+    public function getupsellLogs(Request $request)
     {
-        $shopName = $request->shopName;
+        $session = $request->get('shopifySession');
+        
+        $shopName = $session->getShop();
         $upsellLogs = Upselllogs::where('shop_name', $shopName)
-        ->where('did_offer_show', true)->paginate(10);
+        ->where('did_offer_show', true)->paginate(2);
         return 
         [
             "upsellLogs" => $upsellLogs,

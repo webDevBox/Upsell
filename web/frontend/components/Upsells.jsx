@@ -1,7 +1,7 @@
 import {useState,React,useCallback,useEffect} from 'react'
 import {useNavigate,NavLink} from "react-router-dom"
 import {Page, Card, DataTable, Badge, Button, Layout
-} from '@shopify/polaris';
+} from '@shopify/polaris'
 import { useAppQuery } from "../hooks"
 
 export default function Upsells() {

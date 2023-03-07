@@ -9,7 +9,7 @@ import { useAppQuery } from "../hooks"
 import Impression from '../components/Analytics/Impression'
 import Conversion from '../components/Analytics/Conversion'
 import Revenue from '../components/Analytics/Revenue'
-// import UpsellTable from '../components/Analytics/UpsellTable'
+import UpsellTable from '../components/Analytics/UpsellTable'
 
 export default function Analytics() {
   const[impressions,setImpressions] = useState()
@@ -19,6 +19,7 @@ export default function Analytics() {
   const [impressionBar,setImpressionBar] = useState([])
   const [conversionBar,setConversionBar] = useState([])
   const [revenueBar,setRevenueBar] = useState([])
+  const [upsellLogs,setUpsellLogs] = useState()
  
   const {
     response,
@@ -80,6 +81,7 @@ export default function Analytics() {
             <Revenue revenue={revenue}
               revenueBar={revenueBar} isLoading={isLoading}
             />
+            <UpsellTable />
           </Layout.Section>
         </Layout>
       </Page> 

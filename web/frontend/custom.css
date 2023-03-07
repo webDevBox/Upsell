@@ -44,7 +44,7 @@
 
 .loading{
     width: 100px;
-    height: 30px;
+    height: 100px;
 }
 
 .settingForm{
@@ -69,4 +69,8 @@ text-decoration: none;
 .Polaris-Card__SectionHeader {
     font-weight: bold;
     font-size: larger;
+  }
+
+  .center{
+    margin-left: 40%;
   }
