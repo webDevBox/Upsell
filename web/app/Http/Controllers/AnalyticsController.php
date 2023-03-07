@@ -6,7 +6,7 @@ use DB;
 use App\Models\Shop;
 use DateTime;
 use DateTimeZone;
-use App\UpsellLog;
+use App\Models\Upselllogs;
 use Illuminate\Http\Request;
 use App\Exports\UpsellLogsExport;
 use Illuminate\Support\Facades\Log;
@@ -18,7 +18,9 @@ class AnalyticsController extends Controller
 {
     public function index(Request $request)
     {
-        $shopName = $request->shop;
+        $session = $request->get('shopifySession');
+        
+        $shopName = $session->getShop();
 
         $shop = Shop::where('shop_name', $shopName)
                             ->first();
@@ -38,7 +40,7 @@ class AnalyticsController extends Controller
     public function getupsellLogs()
     {
         $shopName = $request->shopName;
-        $upsellLogs = UpsellLog::where('shop_name', $shopName)
+        $upsellLogs = Upselllogs::where('shop_name', $shopName)
         ->where('did_offer_show', true)->paginate(10);
         return 
         [
@@ -52,15 +54,21 @@ class AnalyticsController extends Controller
         return Excel::download(new UpsellLogsExport($shop), 'logs.xlsx');
     }
 
-    public function getMetrics()
+    public function getMetrics(Request $request)
     {
-        $shopName = $request->shopName;
-        $startDate = $request->startDate;
-        $endDate = $request->endDate;
-        $dateStatus = $request->dateStatus;
+        $session = $request->get('shopifySession');
+        
+        $shopName = $session->getShop();
 
         $shop = Shop::where('shop_name', $shopName)
-                        ->first();
+                            ->first();
+
+        $startDate = $shop->start_date;
+        $endDate = $shop->end_date;
+
+        // $startDate = $request->startDate;
+        // $endDate = $request->endDate;
+        // $dateStatus = $request->dateStatus;
 
         $shopTimeZone = new DateTimeZone($shop->timezone);
         $universalTimeZone = new DateTimeZone("UTC"); //server time
@@ -73,13 +81,13 @@ class AnalyticsController extends Controller
         $endTimeZone->setTimezone($universalTimeZone);
         $formattedEndDate = $endTimeZone->format('Y-m-d h:i:s');
 
-        $upsellLogs = UpsellLog::where('shop_name', $shopName)
+        $upsellLogs = Upselllogs::where('shop_name', $shopName)
                                     ->where('did_offer_show', true)
                                     ->whereBetween('timestamp', array($formattedStartDate, $formattedEndDate))
                                     ->get(['upsell_product_id', 'order_changes', 'customer_id', 'initial_price', 'currency_code', 'price_change', 'timestamp']);
 
         $currency = $shop->currency;
-
+        
         $impressions = $upsellLogs->count();
         $conversions = $upsellLogs->where('order_changes', '!=', null);
         $conversionsCount = $conversions->count();
@@ -105,36 +113,36 @@ class AnalyticsController extends Controller
 
         $currency = $this->getCurrencySymbol($currency);
 
-        if($dateStatus == 1)
+        // if($dateStatus == 1)
             $this->saveDates($shopName, $startDate, $endDate);
 
-        $impressionsBar = UpsellLog::where('shop_name', $shopName)
+        $impressionsBar = Upselllogs::where('shop_name', $shopName)
         ->where('did_offer_show', true)
         ->whereBetween('timestamp', array($formattedStartDate, $formattedEndDate))
         ->select('shop_name', DB::raw('date(timestamp) as date'), DB::raw('count(*) as total'))
-        ->groupBy(DB::raw('date(timestamp)'))
+        ->groupBy('shop_name', DB::raw('date(timestamp)'))
         ->get();
         
-        $conversionBar = UpsellLog::where('shop_name', $shopName)
+        $conversionBar = Upselllogs::where('shop_name', $shopName)
         ->where('did_offer_show', true)->where('order_changes', '!=', null)
         ->whereBetween('timestamp', array($formattedStartDate, $formattedEndDate))
         ->select('shop_name', DB::raw('date(timestamp) as date'), DB::raw('count(*) as total'))
-        ->groupBy(DB::raw('date(timestamp)'))
+        ->groupBy('shop_name', DB::raw('date(timestamp)'))
         ->get();
 
-        $conversionRateBar = UpsellLog::where('shop_name', $shopName)
+        $conversionRateBar = Upselllogs::where('shop_name', $shopName)
         ->where('did_offer_show', 1)
         ->whereBetween('timestamp', array($formattedStartDate, $formattedEndDate))
         ->select('shop_name', DB::raw('date(timestamp) as date'), DB::raw('(count(order_changes)/count(did_offer_show) * 100) as total'))
-        ->groupBy(DB::raw('date(timestamp)'))
+        ->groupBy('shop_name', DB::raw('date(timestamp)'))
         ->get();
 
-        $revenueBar = UpsellLog::where('shop_name', $shopName)
+        $revenueBar = Upselllogs::where('shop_name', $shopName)
         ->where('did_offer_show', true)->where('order_changes', '!=', null)
         ->where('price_change', '!=', null)
         ->whereBetween('timestamp', array($formattedStartDate, $formattedEndDate))
         ->select('shop_name', DB::raw('date(timestamp) as date'), DB::raw('sum(price_change) as total'))
-        ->groupBy(DB::raw('date(timestamp)'))
+        ->groupBy('shop_name', DB::raw('date(timestamp)'))
         ->get();
 
 

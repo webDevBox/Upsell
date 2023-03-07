@@ -2,10 +2,13 @@ import {React, useState} from "react";
 import {NavLink} from "react-router-dom"
 
 export default function Header() {
-  const [context,setContext] = useState('home')
-  const handleNavClick = ((menu) => {
-    setContext(menu)
-  })
+  const path = window.location.pathname
+  const pathArray = path.split('/')
+  const lastString = pathArray.pop()
+  var menuItem
+  (lastString === '') ? menuItem = 'home' : menuItem = lastString
+  const [context,setContext] = useState(menuItem)
+  const handleNavClick = ((menu) => setContext(menu))
   return (
         <>
             <div>

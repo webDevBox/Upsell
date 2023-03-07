@@ -8,6 +8,7 @@ use App\Models\Session;
 use App\Http\Controllers\MainController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\UpsellController;
+use App\Http\Controllers\AnalyticsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Log;
@@ -152,6 +153,8 @@ Route::middleware(['shopify.auth'])->group(function () {
     Route::get('/api/updateUpsellStatus/{id}',[UpsellController::class, 'updateUpsellStatus']);
     Route::get('/api/settings',[SettingController::class, 'index']);
     Route::get('/api/updateEmail/{column}/{value}',[SettingController::class, 'updateEmail']);
+    
+    Route::get('/api/getGraphsData',[AnalyticsController::class, 'getMetrics']);
 });
 
 
