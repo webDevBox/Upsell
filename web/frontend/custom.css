@@ -74,3 +74,10 @@ text-decoration: none;
   .center{
     margin-left: 40%;
   }
+
+  .dateRangePicker
+  {
+    display: block;
+    padding: 10px 0;
+    margin-left: 70%;
+  }

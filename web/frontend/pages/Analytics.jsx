@@ -10,7 +10,8 @@ import Impression from '../components/Analytics/Impression'
 import Conversion from '../components/Analytics/Conversion'
 import Revenue from '../components/Analytics/Revenue'
 import UpsellTable from '../components/Analytics/UpsellTable'
-import DatePicker from "react-multi-date-picker"
+import { DatePicker, Space } from 'antd'
+
 
 export default function Analytics() {
   const[impressions,setImpressions] = useState()
@@ -21,6 +22,8 @@ export default function Analytics() {
   const [conversionBar,setConversionBar] = useState([])
   const [revenueBar,setRevenueBar] = useState([])
   const [upsellLogs,setUpsellLogs] = useState()
+  const[startDate,setStartDate] = useState(null)
+  const[endDate,setEndDate] = useState(null)
  
   const {
     response,
@@ -28,7 +31,7 @@ export default function Analytics() {
     isLoading: isLoadingCount,
     isRefetching: isRefetchingCount
   } = useAppQuery({
-    url: "/api/getGraphsData",
+    url: `/api/getGraphsData/${startDate}/${endDate}`,
     reactQueryOptions: {
       onSuccess: (response) => {
         const newImpressionBar = []
@@ -45,6 +48,7 @@ export default function Analytics() {
           newConversionBar.push({
               date: conversion.date,
               total: conversion.total
+    
             },
           )
         })
@@ -67,19 +71,26 @@ export default function Analytics() {
       },
     },
   })
-  const today = new Date()
-  const tomorrow = new Date()
 
-  tomorrow.setDate(tomorrow.getDate() + 1)
-
-  const [value, setValue] = useState([today, tomorrow])
+  const { RangePicker } = DatePicker
+ 
+  const onChange = ((dates, dateStrings) => {
+    if(dateStrings[0] !== '')
+    {
+      setIsLoading(true)
+      setStartDate(dateStrings[0])
+      setEndDate(dateStrings[1])
+    }
+  })
 
   return (
     <>
       <Page>
         <Layout>
           <Layout.Section oneThird>
-          <DatePicker multiple value={value} onChange={setValue} />
+          <Space className='dateRangePicker' direction="vertical" size={12}>
+            <RangePicker onChange={onChange} />
+          </Space>
             <Impression impressions={impressions}
               impressionBar={impressionBar} isLoading={isLoading}
             />

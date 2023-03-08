@@ -55,21 +55,19 @@ class AnalyticsController extends Controller
         return Excel::download(new UpsellLogsExport($shop), 'logs.xlsx');
     }
 
-    public function getMetrics(Request $request)
+    public function getMetrics(Request $request,$startDate,$endDate)
     {
         $session = $request->get('shopifySession');
         
         $shopName = $session->getShop();
 
-        $shop = Shop::where('shop_name', $shopName)
-                            ->first();
+        if($startDate != 'null')
+            $this->saveDates($shopName, $startDate, $endDate);
+
+        $shop = Shop::where('shop_name', $shopName)->first();
 
         $startDate = $shop->start_date;
         $endDate = $shop->end_date;
-
-        // $startDate = $request->startDate;
-        // $endDate = $request->endDate;
-        // $dateStatus = $request->dateStatus;
 
         $shopTimeZone = new DateTimeZone($shop->timezone);
         $universalTimeZone = new DateTimeZone("UTC"); //server time
@@ -113,9 +111,6 @@ class AnalyticsController extends Controller
         $additionalRevenue = number_format((float)$additionalRevenue, 2, '.', '');
 
         $currency = $this->getCurrencySymbol($currency);
-
-        // if($dateStatus == 1)
-            $this->saveDates($shopName, $startDate, $endDate);
 
         $impressionsBar = Upselllogs::where('shop_name', $shopName)
         ->where('did_offer_show', true)
