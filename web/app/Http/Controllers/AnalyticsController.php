@@ -43,11 +43,10 @@ class AnalyticsController extends Controller
         
         $shopName = $session->getShop();
         $upsellLogs = Upselllogs::where('shop_name', $shopName)
-        ->where('did_offer_show', true)->paginate(2);
+        ->where('did_offer_show', true)->paginate(10);
         return 
         [
-            "upsellLogs" => $upsellLogs,
-            "shopName" => $shopName
+            "upsellLogs" => $upsellLogs
         ];
     }
     

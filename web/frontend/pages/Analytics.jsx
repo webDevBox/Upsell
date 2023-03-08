@@ -10,6 +10,7 @@ import Impression from '../components/Analytics/Impression'
 import Conversion from '../components/Analytics/Conversion'
 import Revenue from '../components/Analytics/Revenue'
 import UpsellTable from '../components/Analytics/UpsellTable'
+import DatePicker from "react-multi-date-picker"
 
 export default function Analytics() {
   const[impressions,setImpressions] = useState()
@@ -66,12 +67,19 @@ export default function Analytics() {
       },
     },
   })
+  const today = new Date()
+  const tomorrow = new Date()
+
+  tomorrow.setDate(tomorrow.getDate() + 1)
+
+  const [value, setValue] = useState([today, tomorrow])
 
   return (
     <>
       <Page>
         <Layout>
           <Layout.Section oneThird>
+          <DatePicker multiple value={value} onChange={setValue} />
             <Impression impressions={impressions}
               impressionBar={impressionBar} isLoading={isLoading}
             />

@@ -9,6 +9,9 @@ import moment from 'moment'
 export default function UpsellTable(props)
 {
   const[isLoading,setIsLoading] = useState(true)
+  const[page,setPage] = useState(1)
+  const[nextPage,setNextPage] = useState(1)
+  const[previousPage,setPreviousPage] = useState(1)
 
   const [rows,setRows] = useState([])
   let revenue
@@ -22,9 +25,23 @@ export default function UpsellTable(props)
     isLoading: isLoadingCount,
     isRefetching: isRefetchingCount
   } = useAppQuery({
-    url: `/api/getUpsellLogs`,
+    url: `/api/getUpsellLogs?page=${page}`,
     reactQueryOptions: {
       onSuccess: (response) => {
+        if(response.upsellLogs.prev_page_url === null){
+          setPreviousPage(0)
+        }
+        else{
+          setPreviousPage(page-1)
+        }
+
+        if(response.upsellLogs.next_page_url === null){
+          setNextPage(0)
+        }
+        else{
+          setNextPage(page+1)
+        }
+
         const newRows = []
         response.upsellLogs.data.map((log) => {
           type = (log.price_change !== null) ? <Badge status="success">Redemption</Badge> : <Badge status="info">View</Badge>
@@ -70,11 +87,19 @@ export default function UpsellTable(props)
                 <Pagination
                   hasPrevious
                   onPrevious={() => {
-                    console.log('Previous');
+                    if(previousPage !== 0)
+                    {
+                      setPage(previousPage)
+                      setIsLoading(true)
+                    }
                   }}
                   hasNext
                   onNext={() => {
-                    console.log('Next');
+                    if(nextPage !== 0)
+                    {
+                      setPage(nextPage)
+                      setIsLoading(true)
+                    }
                   }}
                 />
               </div>
