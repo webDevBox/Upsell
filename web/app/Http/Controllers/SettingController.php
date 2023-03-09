@@ -42,7 +42,7 @@ class SettingController extends Controller
 
         $shop = Shop::where('shop_name', $shopName)->first();
 
-        if($shop->setting_emails == $value || $shop->email_time == $value || !isset($value))
+        if($shop->setting_emails == $value || $shop->email_time == $value || $value == 'undefined')
         {
             return response()->json(
             [

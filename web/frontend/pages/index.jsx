@@ -22,11 +22,6 @@ export default function App() {
               <Card>
                 <Card.Section>
                 <Upsells />
-                  {/* { isStatusChanged === true ?
-                    
-                    :
-                    <center><img className='loading' src='../images/loader.gif' /></center>
-                  } */}
                 </Card.Section>
               </Card>
               <NavLink to={"/createUpsell"} type="button" className="button create-upsell-button"> Create Upsell </NavLink>

@@ -11,8 +11,8 @@ export default function SettingsForm()
   const [emails, setEmails] = useState([])
   const [time, setTime] = useState()
   const [column, setColumn] = useState()
-  const[value,setValue] = useState()
-
+  const [value,setValue] = useState()
+  const [isLoading,setIsLoading] = useState(true)
   
     const {
       data,
@@ -23,8 +23,10 @@ export default function SettingsForm()
       url: "/api/settings",
       reactQueryOptions: {
         onSuccess: (data) => {
-          // setEmails(data.emails)
+          const emailArray = data.emails.split(',')
+          setEmails(emailArray)
           setTime(data.time)
+          setIsLoading(false)
         },
       },
     })
@@ -48,69 +50,42 @@ export default function SettingsForm()
 
     return(
         <>
-        <div className="p-10">
-          <h3>Input email address</h3>
-          <ReactMultiEmail
-            emails={emails}
-            onChange={(_emails) => {
-              setColumn('setting_emails')
-              setEmails(_emails)
-              setValue(_emails)
-            }}
-            getLabel={(email, index, removeEmail) => {
-              return (
-                <div data-tag key={index}>
-                  <div data-tag-item>{email}</div>
-                  <span data-tag-handle onClick={() => removeEmail(index)}>
-                    ×
-                  </span>
-                </div>
-              );
-            }}
-            />
-
-            <h3>Input Time</h3>
-            <input
-              type="time"
-              id="time-input"
-              name="time"
-              className="form-control"
-              value={time}
-              onChange={handleTimeChange}
-            />
-            </div>
-
-        {/* <div className='container'>
-          <div className='row'>
-            <div className='form-group'>
-              <div className='col-sm-4'>
-                <h4 for='example_emailBS'>Input email addresses</h4>
-                <input type='text' 
-                    id='example_emailBS'
-                    className='form-control'
+          {(isLoading === false ) ?
+            <div className="p-10">
+              <h3>Input email address</h3>
+              <ReactMultiEmail
+                emails={emails}
+                onChange={(_emails) => {
+                  console.log(_emails)
+                  setColumn('setting_emails')
+                  setEmails(_emails)
+                  setValue(_emails)
+                }}
+                getLabel={(email, index, removeEmail) => {
+                  return (
+                    <div data-tag key={index}>
+                      <div data-tag-item>{email}</div>
+                      <span data-tag-handle onClick={() => removeEmail(index)}>
+                        ×
+                      </span>
+                    </div>
+                  );
+                }}
                 />
-              </div>
-              <div className='col-sm-offset-2 col-sm-4'>
-                <h4>Current email addresses</h4>
-                <pre id='current_emailsBS'>{emails}</pre>
-              </div>
+
+                <h3>Input Time</h3>
+                <input
+                  type="time"
+                  id="time-input"
+                  name="time"
+                  className="form-control"
+                  value={time}
+                  onChange={handleTimeChange}
+                />
             </div>
-          </div>
-        </div>
-        <div className='container'>
-          <div className='row'>
-            <div className='form-group'>
-              <div className='col-sm-4'>
-                <h4 for='example_emailBS'>Enter Email Time</h4>
-                <input type='time' id="time_data" name='time' className='form-control' />
-              </div>
-              <div className='col-sm-offset-2 col-sm-4'>
-                <h4>Current email Time</h4>
-                <pre id='current_email_time'></pre>
-              </div>
-            </div>
-          </div>
-        </div> */}
+            :
+            <center><img className='loading' src='../images/loader.gif' /></center>
+          }
         </>
     )
 }

@@ -1,6 +1,6 @@
 import {useState,React,useCallback,useEffect} from 'react'
 import {useNavigate,NavLink} from "react-router-dom"
-import {Page, Card, DataTable, Badge, Button, Layout
+import {DataTable, Badge, Button
 } from '@shopify/polaris'
 import { useAppQuery } from "../hooks"
 
@@ -13,6 +13,7 @@ export default function Upsells() {
   const[isStatusChanged,setIsStatusChanged] = useState(true)
   const[isLoading,setIsLoading] = useState(false)
   const[buttonText,setButtonText] = useState('')
+  const[isApiCalled,setIsApiCalled] = useState(false)
   var newText = ''
   const updateUpsellStatus = useCallback((value,index,text) => 
   {
@@ -48,25 +49,15 @@ export default function Upsells() {
     reactQueryOptions: {
       onSuccess: () => {
         setIsLoading(false)
+        setIsApiCalled(true)
       },
     },
   });
 
-  console.log(upselId)
-
-// let updateName;
-//   data?.upsells?.map((upsell,index) => {
-//      updateName =[buttonGo+index, ]
-//   })
-
-  const rows = [
-    ['Name','Status','Action'],
-    
-  ];
+  const rows = [];
   var buttonData = ''
   data?.upsells?.map((upsell,index) => {
-
-    // console.log("index",index)
+    
     (upsell.status === 1 ) ? buttonData = 'Deactivate' : buttonData = 'Activate'
     rows.push([
       <NavLink to={`/upsell/${upsell.id}`} type="button"> {upsell.name} </NavLink>,
@@ -82,19 +73,19 @@ export default function Upsells() {
 
   return (
     <>
-      {/* {isLoading === true ?
+      {(isApiCalled === false) ? 
         <center><img className='loading' src='../images/loader.gif' /></center>
-      :
-    } */}
+        :
         <DataTable
           columnContentTypes={[
               
           ]}
           headings={[
-              
+            'Name','Status','Action'
           ]}
           rows={rows}
         />
+      }
     </>
   );
 
