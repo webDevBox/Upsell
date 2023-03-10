@@ -8,6 +8,7 @@ import {Page, Card, DataTable, Badge, Button,
 import DiscountUpsell from '../components/DiscountUpsell'
 import OrderState from '../components/OrderState'
 import BottomButton from '../components/BottomButton'
+import {Provider, ResourcePicker} from '@shopify/app-bridge-react'
 import { useAppQuery, useAuthenticatedFetch, useAppMutation } from "../hooks"
 
 export default function createUpsell()
@@ -75,6 +76,33 @@ export default function createUpsell()
             await mutate(payload);
         }
 
+        const config = {
+            // The client ID provided for your application in the Partner Dashboard.
+            apiKey: "ed09e279f4755ea75c4a74d6118b1cfd",
+            // The host of the specific shop that's embedding your app. This value is provided by Shopify as a URL query parameter that's appended to your application URL when your app is loaded inside the Shopify admin.
+            host: 'Y2hlY2tvdXQtaGVyby5teXNob3BpZnkuY29tL2FkbWlu',
+            forceRedirect: true
+        }
+
+        const[popUp,setPopUp] = useState(false)
+
+        const handlePopoverCancle = useCallback(() => {
+            setPopUp(false)
+        })
+        
+        const[showForProduct,setShowForProduct] = useState(false)
+
+        const handleShowForPopoverCancle = useCallback(() => {
+            setShowForProduct(false)
+        })
+        
+        const[showForCollection,setShowForCollection] = useState(false)
+
+        const handleShowForCollectionPopoverCancle = useCallback(() => {
+            setShowForCollection(false)
+        })
+
+
     return (
         <>
             <Page>
@@ -94,7 +122,14 @@ export default function createUpsell()
                         <Card>
                             <Card.Section>
                                 <p style={{ marginBottom: "5px" }}>Upsell Product</p>
-                                <Button type="button" > Select Product </Button>
+                                <Button type="button" onClick={() => {
+                                    setPopUp(true)
+                                }} > Select Product </Button>
+                                {popUp &&
+                                    <Provider config={config}>
+                                        <ResourcePicker onCancel={handlePopoverCancle} resourceType="Product" open />
+                                    </Provider>
+                                }
                             </Card.Section>
                             <Card.Section>
                                 <TextField
@@ -136,10 +171,24 @@ export default function createUpsell()
                                     onChange={handleShowsForCheckChange}
                                 />
                                 {showsForCheck === 'products' &&
-                                    <Button>Select Products</Button>
+                                    <Button onClick={() => {
+                                        setShowForProduct(true)
+                                    }}>Select Products</Button>
+                                }
+                                {showForProduct &&
+                                    <Provider config={config}>
+                                        <ResourcePicker onCancel={handleShowForPopoverCancle} resourceType="Product" open />
+                                    </Provider>
                                 }
                                 {showsForCheck === 'collections' &&
-                                    <Button>Select Collections</Button>
+                                    <Button onClick={() => {
+                                        setShowForCollection(true)
+                                    }}>Select Collections</Button>
+                                }
+                                {showForCollection &&
+                                    <Provider config={config}>
+                                        <ResourcePicker onCancel={handleShowForCollectionPopoverCancle} resourceType="Collection" open />
+                                    </Provider>
                                 }
                             </Stack>
                             </Card.Section>

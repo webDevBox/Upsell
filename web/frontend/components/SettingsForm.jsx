@@ -56,7 +56,6 @@ export default function SettingsForm()
               <ReactMultiEmail
                 emails={emails}
                 onChange={(_emails) => {
-                  console.log(_emails)
                   setColumn('setting_emails')
                   setEmails(_emails)
                   setValue(_emails)

@@ -6,7 +6,7 @@ export default function Header() {
   const pathArray = path.split('/')
   const lastString = pathArray.pop()
   var menuItem
-  (lastString === '') ? menuItem = 'home' : menuItem = lastString
+  (lastString === '') ? menuItem = 'home' : (lastString === 'createUpsell') ? menuItem = 'home' : menuItem = lastString
   const [context,setContext] = useState(menuItem)
   const handleNavClick = ((menu) => setContext(menu))
   return (
