@@ -46,7 +46,9 @@ export default function createUpsell()
       const [orderTotalState, setOrderTotalState] = useState(false)
       const [orderLineItemState, setOrderLineItemState] = useState(false) 
 
-        const[saveButtonLoading,setSaveButtonLoading] = useState(false)
+        const [saveButtonLoading,setSaveButtonLoading] = useState(false)
+        const [productId,setProductId] = useState()
+        const [showsForData,setShowsForData] = useState()
 
       const {  mutate, status } = useAppMutation({
         url: "/api/saveUpsell",
@@ -60,6 +62,8 @@ export default function createUpsell()
         const payload = {
             upsellName : upsellName,
             description: productDiscription,
+            upsellProductId: productId,
+            showsForData: JSON.stringify(showsForData),
             isDiscountEnabled: discountChecked,
             discountValue: discountValue,
             showsForOption: showsForCheck,
@@ -102,7 +106,30 @@ export default function createUpsell()
             setShowForCollection(false)
         })
 
+        const handleProduct = useCallback((value) => {
+            setPopUp(false)
+            value.selection.map((item) => {
+                setProductId(item.id)
+            })
+        })
 
+        const handleShowsForProduct = useCallback((value) => {
+            setShowForProduct(false)
+            const productsArr = []
+            value.selection.map((item) => {
+                productsArr.push(item.id)
+            })
+            setShowsForData(productsArr)
+        })
+        
+        const handleShowsForCollection = useCallback((value) => {
+            handleShowForCollectionPopoverCancle(false)
+            const productsArr = []
+            value.selection.map((item) => {
+                productsArr.push(item.id)
+            })
+            setShowsForData(productsArr)
+        })
     return (
         <>
             <Page>
@@ -127,7 +154,9 @@ export default function createUpsell()
                                 }} > Select Product </Button>
                                 {popUp &&
                                     <Provider config={config}>
-                                        <ResourcePicker onCancel={handlePopoverCancle} resourceType="Product" open />
+                                        <ResourcePicker onCancel={handlePopoverCancle}
+                                            allowMultiple={false} onSelection={handleProduct} 
+                                             resourceType="Product" open />
                                     </Provider>
                                 }
                             </Card.Section>
@@ -177,7 +206,8 @@ export default function createUpsell()
                                 }
                                 {showForProduct &&
                                     <Provider config={config}>
-                                        <ResourcePicker onCancel={handleShowForPopoverCancle} resourceType="Product" open />
+                                        <ResourcePicker onCancel={handleShowForPopoverCancle}
+                                         onSelection={handleShowsForProduct} resourceType="Product" open />
                                     </Provider>
                                 }
                                 {showsForCheck === 'collections' &&
@@ -187,7 +217,8 @@ export default function createUpsell()
                                 }
                                 {showForCollection &&
                                     <Provider config={config}>
-                                        <ResourcePicker onCancel={handleShowForCollectionPopoverCancle} resourceType="Collection" open />
+                                        <ResourcePicker onCancel={handleShowForCollectionPopoverCancle}
+                                        onSelection={handleShowsForCollection} resourceType="Collection" open />
                                     </Provider>
                                 }
                             </Stack>
